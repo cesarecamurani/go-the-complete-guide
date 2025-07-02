@@ -45,12 +45,5 @@ func (note Note) Save() error {
 		return err
 	}
 
-	//writeErr := os.WriteFile(fileName, toJson, ReadWritePermissionCode)
-	//if writeErr != nil {
-	//	return writeErr
-	//}
-	//
-	//return nil
-
 	return os.WriteFile(fileName, toJson, ReadWritePermissionCode)
 }

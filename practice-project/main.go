@@ -14,13 +14,27 @@ type saver interface {
 	Save() error
 }
 
+type outputtable interface {
+	saver
+	Display()
+}
+
 func main() {
+	result := add(1, 2)
+	fmt.Println(result)
+
+	printAnything(1)
+	printAnything(1.5)
+	printAnything("Ciao")
+
 	title, content := getNoteData()
 	userNote, err := note.New(title, content)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
+	printAnything(userNote)
 
 	todoText := getUserInput("Todo text: ")
 	userTodo, err := todo.New(todoText)
@@ -29,17 +43,20 @@ func main() {
 		return
 	}
 
-	userNote.Display()
-	err = saveData(userNote)
+	err = outputData(userNote)
 	if err != nil {
 		return
 	}
+	err = outputData(userTodo)
+	if err != nil {
+		return
+	}
+}
 
-	userTodo.Display()
-	err = saveData(userTodo)
-	if err != nil {
-		return
-	}
+func outputData(data outputtable) error {
+	data.Display()
+
+	return saveData(data)
 }
 
 func saveData(data saver) error {
@@ -77,4 +94,21 @@ func getUserInput(prompt string) string {
 	text = strings.TrimSuffix(text, "\r")
 
 	return text
+}
+
+// interface as type example (accepts any type):
+func printAnything(data interface{}) {
+	switch data.(type) {
+	case int:
+		fmt.Println("Integer:", data)
+	case float64:
+		fmt.Println("Float:", data)
+	case string:
+		fmt.Println("String:", data)
+	}
+}
+
+// Generics
+func add[T int | float64 | string](a, b T) T {
+	return a + b
 }
