@@ -27,16 +27,15 @@ func main() {
 
 	// 2)
 	fmt.Println(hobbies[0])
-	twoHobbies := [2]string{hobbies[1], hobbies[2]}
-	fmt.Println(twoHobbies)
+	fmt.Println(hobbies[1:])
 
 	// 3)
 	bestHobbies := hobbies[:2]
 	fmt.Println(bestHobbies)
 
 	// 4
-	//otherHobbies := bestHobbies[:]
-	//fmt.Println(otherHobbies)
+	bestHobbies = bestHobbies[1:3]
+	fmt.Println(bestHobbies)
 
 	// 5
 	goals := []string{"Learn a new language", "Create a Go app"}
@@ -45,6 +44,11 @@ func main() {
 	// 6
 	goals[1] = "Use Go in a project"
 	goals = append(goals, "Expand my skills")
+	fmt.Println(goals)
+
+	// Append another list to an existing one
+	newGoals := []string{"For the sake of it", "Make more money"}
+	goals = append(goals, newGoals...)
 	fmt.Println(goals)
 
 	// 7

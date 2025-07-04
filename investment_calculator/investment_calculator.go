@@ -13,13 +13,22 @@ func main() {
 	var years float64
 
 	fmt.Print("Investment amount: ")
-	fmt.Scan(&investmentAmount)
+	_, err := fmt.Scan(&investmentAmount)
+	if err != nil {
+		return
+	}
 
 	fmt.Print("Return rate: ")
-	fmt.Scan(&expectedReturnRate)
+	_, err = fmt.Scan(&expectedReturnRate)
+	if err != nil {
+		return
+	}
 
 	fmt.Print("Years: ")
-	fmt.Scan(&years)
+	_, err = fmt.Scan(&years)
+	if err != nil {
+		return
+	}
 
 	expectedReturn, realReturn := calculateFutureValues(investmentAmount, expectedReturnRate, years)
 

@@ -2,6 +2,13 @@ package main
 
 import "fmt"
 
+// Type alias
+type floatMap map[string]float64
+
+func (fm floatMap) print() {
+	fmt.Println(fm)
+}
+
 func main() {
 	// Arrays
 	//var fruits [4]string
@@ -28,4 +35,34 @@ func main() {
 	updatedPrices := append(dynamicPrices, 6.99)
 
 	fmt.Println(updatedPrices)
+
+	// Make function (Slices)
+	userNames := make([]string, 3, 10)
+
+	userNames[0] = "Cesare"
+	userNames[1] = "Fred"
+	userNames[2] = "Mary"
+	userNames = append(userNames, "John")
+	userNames = append(userNames, "Jane")
+	userNames = append(userNames, "James")
+
+	fmt.Println(userNames)
+	fmt.Println(len(userNames), cap(userNames))
+
+	for _, name := range userNames {
+		fmt.Println(name)
+	}
+
+	// Make function (Maps) with type alias
+	ratings := make(floatMap, 3)
+
+	ratings["go"] = 4.8
+	ratings["react"] = 4.6
+	ratings["ruby"] = 4.5
+
+	ratings.print()
+
+	for language, rating := range ratings {
+		fmt.Printf("%v has a rating of %v\n", language, rating)
+	}
 }
