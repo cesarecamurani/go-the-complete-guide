@@ -23,7 +23,7 @@ func main() {
 	fmt.Println(prices[3])
 	fmt.Println(fruits)
 
-	// Slices (DON'T MAKE COPIES, IF MANIPULATED CHANGE THE ORIGINAL ARRAY!)
+	// Slices (DON'T MAKE COPIES IF MANIPULATED CHANGE THE ORIGINAL ARRAY!)
 	discountedPrices := prices[1:3]
 	fmt.Println(discountedPrices)
 	fmt.Println(len(discountedPrices), cap(discountedPrices))
@@ -53,7 +53,7 @@ func main() {
 		fmt.Println(name)
 	}
 
-	// Make function (Maps) with type alias
+	// Make a function (Maps) with a type alias
 	ratings := make(floatMap, 3)
 
 	ratings["go"] = 4.8
