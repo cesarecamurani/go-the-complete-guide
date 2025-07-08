@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
-	"example.com/app/note"
-	"example.com/app/todo"
+	"example.com/practiceapp/note"
+	"example.com/practiceapp/todo"
 	"fmt"
 	"os"
 	"reflect"

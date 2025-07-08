@@ -23,10 +23,11 @@ func NewTaxedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxedPriceJob {
 	}
 }
 
-func (job *TaxedPriceJob) Process() error {
+func (job *TaxedPriceJob) Process(doneChan chan bool, errorChan chan error) {
 	err := job.loadPrices()
 	if err != nil {
-		return fmt.Errorf("failed to load prices: %v", err)
+		errorChan <- err
+		return
 	}
 
 	result := make(taxPriceType, len(job.Prices))
@@ -38,9 +39,13 @@ func (job *TaxedPriceJob) Process() error {
 
 	job.TaxedPrices = result
 
-	fmt.Printf("Processed prices with tax rate %.2f\n", job.TaxRate)
+	err = job.IOManager.WriteResult(job)
+	if err != nil {
+		errorChan <- err
+		return
+	}
 
-	return job.IOManager.WriteResult(job)
+	doneChan <- true
 }
 
 func (job *TaxedPriceJob) loadPrices() error {

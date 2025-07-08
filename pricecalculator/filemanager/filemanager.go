@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 )
 
 type FileManager struct {
@@ -24,6 +25,7 @@ func (fm FileManager) ReadLines() ([]string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %v", err)
 	}
+
 	defer file.Close()
 
 	var lines []string
@@ -47,6 +49,8 @@ func (fm FileManager) WriteResult(data any) error {
 		return fmt.Errorf("failed to create file: %v", err)
 	}
 	defer file.Close()
+
+	time.Sleep(3 * time.Second) // Simulate a delay for demonstration purposes
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
