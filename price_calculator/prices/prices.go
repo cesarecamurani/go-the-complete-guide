@@ -2,45 +2,34 @@ package prices
 
 import (
 	"example.com/price-calculator/conversion"
-	"example.com/price-calculator/filemanager"
+	"example.com/price-calculator/iomanager"
 	"fmt"
 )
 
-type taxPrice map[string]string
+type taxPriceType map[string]string
 
 type TaxedPriceJob struct {
-	TaxRate     float64
-	Prices      []float64
-	TaxedPrices taxPrice
+	IOManager   iomanager.IOManager `json:"-"`
+	TaxRate     float64             `json:"tax_rate"`
+	Prices      []float64           `json:"prices"`
+	TaxedPrices taxPriceType        `json:"taxed_prices"`
 }
 
-func NewTaxedPriceJob(taxRate float64) *TaxedPriceJob {
+func NewTaxedPriceJob(iom iomanager.IOManager, taxRate float64) *TaxedPriceJob {
 	return &TaxedPriceJob{
-		TaxRate: taxRate,
-		Prices:  []float64{},
+		IOManager: iom,
+		TaxRate:   taxRate,
+		Prices:    []float64{},
 	}
 }
 
-func (job *TaxedPriceJob) LoadPrices() {
-	lines, err := filemanager.ReadLInesFromFile("prices.txt")
+func (job *TaxedPriceJob) Process() error {
+	err := job.loadPrices()
 	if err != nil {
-		fmt.Printf("failed to read lines from file: %v", err)
-		return
+		return fmt.Errorf("failed to load prices: %v", err)
 	}
 
-	prices, err := conversion.StringsToFloat(lines)
-	if err != nil {
-		fmt.Printf("failed to convert strings to float: %v", err)
-		return
-	}
-
-	job.Prices = prices
-}
-
-func (job *TaxedPriceJob) Process() {
-	job.LoadPrices()
-
-	result := make(taxPrice, len(job.Prices))
+	result := make(taxPriceType, len(job.Prices))
 
 	for _, price := range job.Prices {
 		taxedPrice := price + (price * job.TaxRate)
@@ -49,8 +38,23 @@ func (job *TaxedPriceJob) Process() {
 
 	job.TaxedPrices = result
 
-	err := filemanager.WriteJSON(fmt.Sprintf("taxed_prices_%.0f.json", job.TaxRate*100), job)
+	fmt.Printf("Processed prices with tax rate %.2f\n", job.TaxRate)
+
+	return job.IOManager.WriteResult(job)
+}
+
+func (job *TaxedPriceJob) loadPrices() error {
+	lines, err := job.IOManager.ReadLines()
 	if err != nil {
-		return
+		return err
 	}
+
+	prices, err := conversion.StringsToFloat(lines)
+	if err != nil {
+		return err
+	}
+
+	job.Prices = prices
+
+	return nil
 }
