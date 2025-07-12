@@ -6,7 +6,7 @@ import (
 )
 
 type Event struct {
-	ID          int       `json:"id"`
+	ID          int64     `json:"id"`
 	Name        string    `json:"name" binding:"required"`
 	Description string    `json:"description" binding:"required"`
 	Location    string    `json:"location" binding:"required"`
@@ -34,8 +34,26 @@ func (e Event) Save() error {
 
 	id, err := result.LastInsertId()
 
-	e.ID = int(id)
+	e.ID = id
 
+	return err
+}
+
+func (e Event) Update() error {
+	query := `
+	UPDATE events 
+	SET name = ?, description = ?, location = ?, date_time = ?, user_id = ? 
+	WHERE id = ?
+	`
+
+	statement, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer statement.Close()
+
+	_, err = statement.Exec(e.Name, e.Description, e.Location, e.DateTime, e.UserID, e.ID)
 	return err
 }
 
@@ -63,4 +81,33 @@ func GetEvents() ([]Event, error) {
 	}
 
 	return events, nil
+}
+
+func GetEventByID(id int64) (*Event, error) {
+	query := `SELECT * FROM events WHERE id = ?`
+
+	row := db.DB.QueryRow(query, id)
+
+	var event Event
+
+	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &event, nil
+}
+
+func (e Event) Delete() error {
+	query := `DELETE FROM events WHERE id = ?`
+
+	statement, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+
+	defer statement.Close()
+
+	_, err = statement.Exec(e.ID)
+	return err
 }

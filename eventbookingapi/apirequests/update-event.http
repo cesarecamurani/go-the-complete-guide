@@ -1,0 +1,10 @@
+PUT localhost:8080/events/11
+Content-Type: application/json
+
+{
+  "name": "Gods of Metal Festival - Updated",
+  "description": "An updated day of heavy metal music featuring top bands.",
+  "location": "Madison Square Garden, New York - Updated",
+  "date": "2025-06-15T14:00:00Z",
+  "user_id": "1234567890"
+}
