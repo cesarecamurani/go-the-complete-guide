@@ -20,6 +20,7 @@ func signUp(context *gin.Context) {
 		return
 	}
 
+	user.Password = "*********"
 	context.JSON(http.StatusCreated, gin.H{"message": "User created!", "user": user})
 }
 
@@ -43,5 +44,5 @@ func login(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{"message": "Login successful", "token": token})
+	context.JSON(http.StatusOK, gin.H{"message": "Login successful!", "token": token})
 }

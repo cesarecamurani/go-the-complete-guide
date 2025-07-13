@@ -1,10 +1,10 @@
 POST localhost:8080/events
 Content-Type: application/json
+Authorization: 123
 
 {
   "name": "Gods of Metal Festival",
   "description": "A day of heavy metal music featuring top bands.",
   "location": "Madison Square Garden, New York",
-  "date": "2025-06-15T14:00:00Z",
-  "user_id": "1234567890"
+  "date": "2025-08-15T14:00:00Z"
 }

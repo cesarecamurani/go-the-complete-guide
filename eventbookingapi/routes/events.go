@@ -49,6 +49,8 @@ func createEvent(context *gin.Context) {
 		return
 	}
 
+	event.UserID = context.GetString("userId")
+
 	if err := event.Save(); err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create event"})
 		return
@@ -64,9 +66,16 @@ func updateEvent(context *gin.Context) {
 		return
 	}
 
-	_, err = models.GetEventByID(eventId)
+	userId := context.GetString("userId")
+
+	event, err := models.GetEventByID(eventId)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve event"})
+		return
+	}
+
+	if event.UserID != userId {
+		context.JSON(http.StatusForbidden, gin.H{"error": "You are not authorized to update this event"})
 		return
 	}
 

@@ -2,7 +2,7 @@ POST localhost:8080/signup
 Content-Type: application/json
 
 {
-  "username": "jane_doe",
-  "email": "janedoe@gmail.com",
-  "password": "not_so_secure@password123"
+  "username": "jack_smith",
+  "email": "jack.smith@gmail.com",
+  "password": "super_secret_password"
 }

@@ -4,26 +4,30 @@ import (
 	"errors"
 	"example.com/eventbookingapi/db"
 	"example.com/eventbookingapi/utils"
+	"github.com/google/uuid"
 )
 
 type User struct {
-	ID       int64  `json:"id"`
+	ID       string `json:"id"`
 	Username string `json:"username" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
-func (u User) Save() error {
+func (u *User) Save() error {
+	if u.ID == "" {
+		u.ID = uuid.New().String()
+	}
+
 	query := `
-	INSERT INTO users (username, email, password) 
-	VALUES (?, ?, ?)
+	INSERT INTO users (id, username, email, password) 
+	VALUES (?, ?, ?, ?)
 	`
 
 	statement, err := db.DB.Prepare(query)
 	if err != nil {
 		return err
 	}
-
 	defer statement.Close()
 
 	hashedPassword, err := utils.HashPassword(u.Password)
@@ -31,22 +35,15 @@ func (u User) Save() error {
 		return err
 	}
 
-	result, err := statement.Exec(u.Username, u.Email, hashedPassword)
+	_, err = statement.Exec(u.ID, u.Username, u.Email, hashedPassword)
 	if err != nil {
 		return err
 	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
-
-	u.ID = id
 
 	return nil
 }
 
-func (u User) ValidateCredentials() error {
+func (u *User) ValidateCredentials() error {
 	query := `SELECT id, password FROM users WHERE username = ?`
 
 	row := db.DB.QueryRow(query, u.Username)
