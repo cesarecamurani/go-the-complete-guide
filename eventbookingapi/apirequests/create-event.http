@@ -1,6 +1,6 @@
 POST localhost:8080/events
 Content-Type: application/json
-Authorization: 123
+Authorization:
 
 {
   "name": "Gods of Metal Festival",

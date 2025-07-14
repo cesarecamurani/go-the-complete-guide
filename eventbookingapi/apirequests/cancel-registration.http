@@ -1,0 +1,7 @@
+DELETE localhost:8080/events/1/register
+Content-Type: application/json
+Authorization:
+
+{
+  "userId": "b0674fcd-1b4b-4c3d-9756-00e491e77206"
+}
